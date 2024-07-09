@@ -58,6 +58,15 @@ class KickNotifier(commands.Cog):
         else:
             await ctx.send("No notification channel has been set.")
 
+    @kicknotifier.command()
+    async def listusers(self, ctx):
+        """List all Kick users in the notification list"""
+        users = await self.config.guild(ctx.guild).kick_users()
+        if users:
+            await ctx.send("Configured Kick streamers:\n" + "\n".join(users))
+        else:
+            await ctx.send("No Kick streamers have been configured.")
+
     @commands.Cog.listener()
     async def on_ready(self):
         """Check if users are streaming on Kick when bot is ready"""
@@ -92,5 +101,5 @@ class KickNotifier(commands.Cog):
                 embed.add_field(name="Watch here", value=f"https://kick.com/{username}")
                 await channel.send(embed=embed)
 
-def setup(bot):
-    bot.add_cog(KickNotifier(bot))
+async def setup(bot):
+    await bot.add_cog(KickNotifier(bot))
