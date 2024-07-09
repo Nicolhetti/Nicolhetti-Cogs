@@ -1,5 +1,5 @@
 from redbot.core import commands, Config
-from discord import Embed
+from discord import Embed, TextChannel
 import aiohttp
 
 class KickNotifier(commands.Cog):
@@ -9,7 +9,8 @@ class KickNotifier(commands.Cog):
         self.bot = bot
         self.config = Config.get_conf(self, identifier=1234567890, force_registration=True)
         default_guild = {
-            "kick_users": []
+            "kick_users": [],
+            "notification_channel": None
         }
         self.config.register_guild(**default_guild)
 
@@ -38,6 +39,25 @@ class KickNotifier(commands.Cog):
             else:
                 await ctx.send(f"User {kick_username} is not in the notification list.")
 
+    @kicknotifier.command()
+    async def setchannel(self, ctx, channel: TextChannel):
+        """Set the channel for Kick stream notifications"""
+        await self.config.guild(ctx.guild).notification_channel.set(channel.id)
+        await ctx.send(f"Notification channel set to {channel.mention}")
+
+    @kicknotifier.command()
+    async def getchannel(self, ctx):
+        """Get the current notification channel"""
+        channel_id = await self.config.guild(ctx.guild).notification_channel()
+        if channel_id:
+            channel = self.bot.get_channel(channel_id)
+            if channel:
+                await ctx.send(f"Current notification channel is {channel.mention}")
+            else:
+                await ctx.send("The configured notification channel is not accessible.")
+        else:
+            await ctx.send("No notification channel has been set.")
+
     @commands.Cog.listener()
     async def on_ready(self):
         """Check if users are streaming on Kick when bot is ready"""
@@ -64,8 +84,13 @@ class KickNotifier(commands.Cog):
 
     async def send_notification(self, guild, username):
         """Send notification that user is live"""
-        channel = guild.system_channel
-        if channel:
-            embed = Embed(title="Kick Stream Alert", description=f"{username} is now live on Kick!", color=0x1DA1F2)
-            embed.add_field(name="Watch here", value=f"https://kick.com/{username}")
-            await channel.send(embed=embed)
+        channel_id = await self.config.guild(guild).notification_channel()
+        if channel_id:
+            channel = self.bot.get_channel(channel_id)
+            if channel:
+                embed = Embed(title="Kick Stream Alert", description=f"{username} is now live on Kick!", color=0x1DA1F2)
+                embed.add_field(name="Watch here", value=f"https://kick.com/{username}")
+                await channel.send(embed=embed)
+
+def setup(bot):
+    bot.add_cog(KickNotifier(bot))
