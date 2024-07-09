@@ -69,6 +69,3 @@ class KickNotifier(commands.Cog):
             embed = Embed(title="Kick Stream Alert", description=f"{username} is now live on Kick!", color=0x1DA1F2)
             embed.add_field(name="Watch here", value=f"https://kick.com/{username}")
             await channel.send(embed=embed)
-
-def setup(bot):
-    bot.add_cog(KickNotifier(bot))
