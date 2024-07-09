@@ -1,17 +1,12 @@
 {
+    "name": "KickNotifier",
     "author": ["Nicolhetti"],
-    "name": "Kick Stream Notifier",
-    "install_msg": "Thank you for installing this cog!\nDo `[p]help CogName` to get the list of commands and their description.",
-    "short": "A cog that sends a notification when a user is live on Kick",
-    "description": "Have you ever wanted to receive a notification when your favorite streamer is live? Then this cog is for you.",
-    "tags": [
-        "streaming",
-        "kick",
-        "live",
-        "streamer"
-    ],
-    "requirements": ["git+https://github.com/Nicolhetti/Nicolhetti-Cogs.git", "TagScript"],
-    "min_bot_version": "3.5.0",
-    "end_user_data_statement": "This cog does not persistently store any data or metadata about users.",
-    "hidden": true
+    "description": "A cog to notify when specified users start streaming on Kick.",
+    "install_msg": "Thank you for installing KickNotifier! Use `[p]kicknotifier` commands to configure the cog.",
+    "short": "Kick Stream Notifier",
+    "requirements": ["aiohttp"],
+    "tags": ["kick", "stream", "notifier", "alert"],
+    "min_bot_version": "3.4.0",
+    "end_user_data_statement": "This cog stores data for the purpose of tracking Kick streamers.",
+    "permissions": ["send_messages", "embed_links"]
 }
