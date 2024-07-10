@@ -93,13 +93,14 @@ class KickStreamerAlert(commands.Cog):
                 streamers = guild_data.get("streamers", [])
                 alert_channel_id = guild_data.get("alert_channel")
                 alert_message = guild_data.get("alert_message", "{streamer} está en directo en Kick! {url}")
+                update_interval = guild_data.get("update_interval", 60)
                 if streamers and alert_channel_id:
                     alert_channel = self.bot.get_channel(alert_channel_id)
                     if alert_channel:
                         for streamer in streamers:
                             if await self.is_live(streamer):
                                 await alert_channel.send(alert_message.format(streamer=streamer, url=f"https://kick.com/{streamer}"))
-            await asyncio.sleep(guild_data.get("update_interval", 60))
+                await asyncio.sleep(update_interval)
 
     async def is_live(self, streamer: str):
         url = f"https://kick.com/api/v1/channels/{streamer}"
@@ -115,3 +116,7 @@ class KickStreamerAlert(commands.Cog):
 
 def setup(bot):
     bot.add_cog(KickStreamerAlert(bot))
+
+
+# I'm very sorry if something doesn't work well, I'm very new to programming and I use AI to help me :(.
+# Lo siento mucho si algo no funciona bien, soy muy nuevo en programación y uso IA para ayudarme :(.
