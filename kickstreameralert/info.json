@@ -1,0 +1,12 @@
+{
+    "name": "KickStreamerAlert",
+    "author": ["Nicolhetti"],
+    "description": "Envía una alerta de estilo embed cuando los streamers configurados comienzan a hacer streaming en Kick.",
+    "install_msg": "Gracias por instalar KickStreamerAlert. Usa `[p]kickalert` para ver los comandos disponibles.",
+    "short": "Alertas de streamers en Kick.",
+    "tags": ["kick", "stream", "alert", "embed"],
+    "requirements": ["aiohttp"],
+    "permissions": ["manage_messages", "send_messages"],
+    "min_bot_version": "3.4.0",
+    "end_user_data_statement": "Este cog no almacena datos personales de los usuarios."
+}
