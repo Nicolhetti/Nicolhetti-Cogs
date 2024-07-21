@@ -1,0 +1,8 @@
+{
+    "author": ["Nicolhetti"],
+    "description": "Banea automáticamente a los usuarios que mencionen @everyone o @here.",
+    "install_msg": "Gracias por instalar el Cog AutoBan. Este Cog baneará automáticamente a cualquier usuario que mencione @everyone o @here.",
+    "short": "AutoBan for @everyone/@here mentions.",
+    "requirements": [],
+    "tags": ["moderation", "ban", "automod"]
+}
