@@ -76,7 +76,7 @@ class MultiKick(commands.Cog):
     async def toggle(self, ctx, state: bool):
         """Activa o desactiva la expulsión automática de usuarios inactivos."""
         await self.config.guild(ctx.guild).auto_kick_inactive.set(state)
-        status = "activada" si state else "desactivada"
+        status = "activada" if state else "desactivada"
         await ctx.send(f"La expulsión automática de usuarios inactivos ha sido {status}.")
 
     @inactivekick.command()
