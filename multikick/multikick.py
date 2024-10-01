@@ -3,13 +3,14 @@ from redbot.core.bot import Red
 from discord.ext import tasks
 import discord
 from datetime import datetime, timedelta
+import argparse
 
 class MultiKick(commands.Cog):
     """Expulsa a múltiples usuarios del servidor y usuarios inactivos si está activado."""
 
     def __init__(self, bot: Red):
         self.bot = bot
-        self.config = Config.get_conf(self, identifier=1333381216, force_registration=True)
+        self.config = Config.get_conf(self, identifier=1234567890, force_registration=True)
         
         default_guild = {
             "auto_kick_inactive": False,
@@ -26,23 +27,41 @@ class MultiKick(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.admin_or_permissions(kick_members=True)
-    async def multikick(self, ctx, *users: discord.Member, reason: str = None):
+    async def multikick(self, ctx, *args):
         """Expulsa a múltiples usuarios del servidor.
         
-        Uso: [p]multikick @user1 @user2 @user3 ... razón
+        Uso: [p]multikick @user1 @user2 @user3 --reason "Razón de expulsión"
         """
-        if not users:
-            await ctx.send("Por favor menciona a los usuarios que deseas expulsar.")
+        # Usamos argparse para manejar múltiples usuarios y la razón con '--reason'
+        parser = argparse.ArgumentParser()
+        parser.add_argument('users', nargs='+', help='Usuarios a expulsar')
+        parser.add_argument('--reason', type=str, help='Razón de expulsión', default="No se proporcionó una razón")
+
+        try:
+            parsed_args = parser.parse_args(args)
+        except Exception as e:
+            await ctx.send("Error en el comando: Asegúrate de usar el formato correcto: `[p]multikick @user1 @user2 --reason \"Razón de expulsión\"`")
             return
         
+        users_to_kick = []
+        for user_str in parsed_args.users:
+            try:
+                user = await commands.MemberConverter().convert(ctx, user_str)
+                users_to_kick.append(user)
+            except Exception:
+                await ctx.send(f"El usuario {user_str} no fue encontrado.")
+                return
+
+        reason = parsed_args.reason
+
         failed_kicks = []
-        for user in users:
+        for user in users_to_kick:
             try:
                 await ctx.guild.kick(user, reason=reason)
                 await ctx.send(f"{user.name} ha sido expulsado por la razón: {reason}")
             except Exception as e:
                 failed_kicks.append(f"{user.name} (Error: {e})")
-        
+
         if failed_kicks:
             await ctx.send(f"No se pudo expulsar a los siguientes usuarios: {', '.join(failed_kicks)}")
 
@@ -57,7 +76,7 @@ class MultiKick(commands.Cog):
     async def toggle(self, ctx, state: bool):
         """Activa o desactiva la expulsión automática de usuarios inactivos."""
         await self.config.guild(ctx.guild).auto_kick_inactive.set(state)
-        status = "activada" if state else "desactivada"
+        status = "activada" si state else "desactivada"
         await ctx.send(f"La expulsión automática de usuarios inactivos ha sido {status}.")
 
     @inactivekick.command()
